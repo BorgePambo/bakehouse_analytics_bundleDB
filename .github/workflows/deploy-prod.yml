@@ -1,0 +1,55 @@
+name: "DEPLOYMENT TO PRODUCTION"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "bakehouse_analytics/src/**"
+
+  workflow_dispatch:
+
+env:
+  DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
+  DATABRICKS_CLIENT_SECRET: ${{ secrets.DATABRICKS_CLIENT_SECRET }}
+
+jobs:
+
+  # Validate bundle
+  validate:
+    name: Validate Databricks Bundle
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Validate Databricks Bundle
+        run: |
+          databricks bundle validate -t prod
+
+
+  # Deploy
+  deploy:
+    name: Deploy Databricks Bundle
+    runs-on: ubuntu-latest
+
+    needs: validate
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Deploy Databricks Bundle
+        run: |
+          databricks bundle deploy -t prod
+      
+      - name: Bundle Summary
+        run: |
+          databricks bundle summary -t prod
