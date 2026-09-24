@@ -1,13 +1,17 @@
-name: "DEPLOYMENT TO PRODUCTION"
+name: "deploy-prod"
 
 on:
   push:
     branches:
       - main
     paths:
-      - "bakehouse_analytics/src/**"
+      - "bakehouse_analytics/**"
 
   workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: bakehouse_analytics
 
 env:
   DATABRICKS_CLIENT_ID: ${{ secrets.DATABRICKS_CLIENT_ID }}
@@ -15,7 +19,6 @@ env:
 
 jobs:
 
-  # Validate bundle
   validate:
     name: Validate Databricks Bundle
     runs-on: ubuntu-latest
@@ -31,8 +34,6 @@ jobs:
         run: |
           databricks bundle validate -t prod
 
-
-  # Deploy
   deploy:
     name: Deploy Databricks Bundle
     runs-on: ubuntu-latest
@@ -49,7 +50,7 @@ jobs:
       - name: Deploy Databricks Bundle
         run: |
           databricks bundle deploy -t prod
-      
+
       - name: Bundle Summary
         run: |
           databricks bundle summary -t prod
