@@ -21,7 +21,7 @@ dev = [
 ]
 
 [project.scripts]
-main = "bakehouse_analytics.main:main"
+bronze_ingest = "bakehouse_analytics.bronze.bronze_ingest:main"
 
 [build-system]
 requires = ["hatchling"]

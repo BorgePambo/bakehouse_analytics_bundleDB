@@ -1,0 +1,17 @@
+resources:
+  pipelines:
+    bakehouse_medallion:
+      name: "Bakehouse Medallion Pipeline"
+
+      catalog: ${var.catalog}
+      schema: ${var.schema}
+
+      root_path: ../src/pipelines/transformations
+
+      libraries:
+        - glob:
+            include: ../src/pipelines/transformations/**
+
+      serverless: true
+      continuous: false
+      development: false
